@@ -1,20 +1,17 @@
-// npm pkgs
 const inquirer = require('inquirer');
 const fs = require('fs');
-const path = require('path');
 
-// Sent to output folder
-const outputPath = path.resolve(__dirname, 'output', 'team.html');
 
-// Classes
+
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 const mainHTML = require('./templates/mainHTML');
 
 const managerCard = require('./templates/managerhtml');
-const internCard = require('./templates/internhtml');
 const engineerCard = require('./templates/engineerhtml');
+const internCard = require('./templates/internhtml');
+
 
 const teamArray = [];
 
