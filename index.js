@@ -15,14 +15,33 @@ const promptUser = () => {
     console.log('Build your team! Choose a role to add a new member. When finished, choose SUBMIT to see your progress.');
     inquirer.prompt([
         {
-            type: "rawlist",
+            type: "list",
             name: "role",
             message: "Choose action:",
-            choices: ["Add an Employee", "Add an Engineer", "Add an Intern", "Add a Manager", "SUBMIT/Update Team"]
+            choices: ["Add an Employee", "Add an Engineer", "Add an Intern", "Add a Manager", "SUBMIT/Update Team"],
         },
-    ])
-
-};
+        ])
+        .then(data => {
+            switch (data.role) {
+                case 'Add an Employee': {
+                    employeePrompt();
+                    break;
+                }
+                case 'Add an Engineer': {
+                    engineerPrompt();
+                    break;
+                }
+                case 'Add an Intern': {
+                    internPrompt();
+                    break;
+                }
+                case 'Add a Manager': {
+                    managerPrompt();
+                    break;
+                }
+            }
+        });
+    }
 
 const employeePrompt = () => {
     inquirer.prompt([
@@ -40,7 +59,6 @@ const employeePrompt = () => {
             name: "email",
             message: "Enter employee's email:",
             type: "input"
-
         }
     ]).then(data => {
         const employeeProfile = new Employee(
@@ -51,7 +69,6 @@ const employeePrompt = () => {
 
         employeeArray.push(employeeProfile);
         promptUser();
-
     });
 }
 
@@ -162,3 +179,9 @@ const internPrompt = () => {
         promptUser();
     })
 };
+
+function init() {
+    promptUser()
+};
+
+init();
