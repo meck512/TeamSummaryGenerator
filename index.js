@@ -1,20 +1,15 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+const Employee = require('./lib/Employee');
+const Manager = require('./lib/Manager');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
 
-
-const Manager = require('./lib/manager');
-const Engineer = require('./lib/engineer');
-const Intern = require('./lib/intern');
-const mainHTML = require('./templates/mainHTML');
-
-const managerCard = require('./templates/managerhtml');
-const engineerCard = require('./templates/engineerhtml');
-const internCard = require('./templates/internhtml');
-
-
-const teamArray = [];
-
+const employeeArray = [];
+const managerArray = [];
+const engineerArray = [];
+const internArray = [];
 
 const promptUser = () => {
     console.log('Build your team! Choose a role to add a new member. When finished, choose SUBMIT to see your progress.');
@@ -43,11 +38,22 @@ const employeePrompt = () => {
         },
         {
             name: "email",
-            type: "input",
-            message: "Enter employee's email:"
+            message: "Enter employee's email:",
+            type: "input"
+
         }
-    ])
-};
+    ]).then(data => {
+        const employeeProfile = new Employee(
+            data.name,
+            data.id,
+            data.email
+        );
+
+        employeeArray.push(employeeProfile);
+        promptUser();
+
+    });
+}
 
 const managerPrompt = () => {
     inquirer.prompt([
@@ -72,7 +78,18 @@ const managerPrompt = () => {
             message: "Enter manager's office number:"
         }
 
-    ])
+    ]).then(data => {
+        const managerProfile = new Manager(
+            data.name,
+            data.id,
+            data.email,
+            data.officeNumber
+        );
+
+        managerArray.push(managerProfile);
+        promptUser();
+
+    });
 };
 
 const engineerPrompt = () => {
@@ -97,7 +114,17 @@ const engineerPrompt = () => {
             type: "input",
             message: "Enter engineer's GitHub username:",
         }
-    ])
+    ]).then(data => {
+        const engineerProfile = new Engineer(
+            data.name,
+            data.id,
+            data.email,
+            data.officeNumber
+        );
+
+        engineerArray.push(engineerProfile);
+        promptUser();
+    });
 };
 
 const internPrompt = () => {
@@ -122,7 +149,16 @@ const internPrompt = () => {
             name: "school",
             message: "Enter intern's school:",
         }
-    
-    ])
-};
 
+    ]).then(data => {
+        const internProfile = new Intern(
+            data.name,
+            data.id,
+            data.email,
+            data.officeNumber
+        );
+
+        internArray.push(internProfile);
+        promptUser();
+    })
+};
