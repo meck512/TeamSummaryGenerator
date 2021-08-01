@@ -2,32 +2,25 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const path = require('path');
 
+const htmlGenerator = path.resolve(__dirname, 'htmlGenerator', 'teamSummaryPage.html');
+const htmlTemplate = require('./dist/htmlTemplate.js');
+
+// Class Objects
 const Employee = require('./lib/Employee');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 
-const htmlGenerator = path.resolve(__dirname, 'htmlGenerator', 'teamSummaryPage.html');
-// generateHTML file path
+// Card Templates
 const employeeCard = require('./dist/employeeCardTemplate');
 const engineerCard = require('./dist/engineerCardTemplate');
 const managerCard = require('./dist/managerCardTemplate');
 const internCard = require('./dist/internCardTemplate');
 
-
-const htmlTemplate = require('./dist/htmlTemplate.js');
-// const cardTemplate = require('./dist/managerCardTemplate.js');
-
-
-// const employeeArray = [];
-// const managerArray = [];
-// const engineerArray = [];
-// const internArray = [];
-
+// Array containing team member info in html card form
 const teamArray = [];
 
-// const cardGenerator = cardTemplate()
-
+// Main menu & subit to generate page
 const promptUser = () => {
     console.log('Build your team! Choose a role to add a new member. When finished, choose SUBMIT to see your progress.');
     inquirer.prompt([
@@ -63,12 +56,14 @@ const promptUser = () => {
         });
 };
 
+// EMPLOYEE
 const employeePrompt = () => {
     inquirer.prompt([
         {
             name: "name",
             message: "Enter employee's name:",
             type: "input"
+
         },
         {
             name: "id",
@@ -92,6 +87,7 @@ const employeePrompt = () => {
     })
 };
 
+// MANAGER
 const managerPrompt = () => {
     inquirer.prompt([
         {
@@ -127,6 +123,7 @@ const managerPrompt = () => {
     });
 };
 
+// ENGINEER
 const engineerPrompt = () => {
     inquirer.prompt([
         {
@@ -154,7 +151,7 @@ const engineerPrompt = () => {
             data.name,
             data.id,
             data.email,
-            data.officeNumber
+            data.github
         );
         const cardify = engineerCard(engineerProfile)
         teamArray.push(cardify);
@@ -162,6 +159,7 @@ const engineerPrompt = () => {
     });
 };
 
+// INTERN
 const internPrompt = () => {
     inquirer.prompt([
         {
@@ -189,7 +187,7 @@ const internPrompt = () => {
             data.name,
             data.id,
             data.email,
-            data.officeNumber
+            data.school
         );
         const cardify = internCard(internProfile)
         teamArray.push(cardify);
@@ -197,10 +195,11 @@ const internPrompt = () => {
     })
 };
 
+// Init
 promptUser()
 
+// Write file
 function generateTeamProfile() {
-    // write team members to a html file
     const teamProfileCards = teamArray.join('');
     fs.writeFileSync(htmlGenerator, htmlTemplate(teamProfileCards), 'utf-8');
   };
