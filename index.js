@@ -1,15 +1,32 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const path = require('path');
 
 const Employee = require('./lib/Employee');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 
-const employeeArray = [];
-const managerArray = [];
-const engineerArray = [];
-const internArray = [];
+const htmlGenerator = path.resolve(__dirname, 'htmlGenerator', 'teamSummaryPage.html');
+// generateHTML file path
+const employeeCard = require('./dist/employeeCardTemplate');
+const engineerCard = require('./dist/engineerCardTemplate');
+const managerCard = require('./dist/managerCardTemplate');
+const internCard = require('./dist/internCardTemplate');
+
+
+const htmlTemplate = require('./dist/htmlTemplate.js');
+// const cardTemplate = require('./dist/managerCardTemplate.js');
+
+
+// const employeeArray = [];
+// const managerArray = [];
+// const engineerArray = [];
+// const internArray = [];
+
+const teamArray = [];
+
+// const cardGenerator = cardTemplate()
 
 const promptUser = () => {
     console.log('Build your team! Choose a role to add a new member. When finished, choose SUBMIT to see your progress.');
@@ -20,8 +37,7 @@ const promptUser = () => {
             message: "Choose action:",
             choices: ["Add an Employee", "Add an Engineer", "Add an Intern", "Add a Manager", "SUBMIT/Update Team"],
         },
-        ])
-        .then(data => {
+    ]).then(data => {
             switch (data.role) {
                 case 'Add an Employee': {
                     employeePrompt();
@@ -39,9 +55,13 @@ const promptUser = () => {
                     managerPrompt();
                     break;
                 }
+                case 'SUBMIT/Update Team': {
+                    generateTeamProfile();
+                    break;
+                }
             }
         });
-    }
+};
 
 const employeePrompt = () => {
     inquirer.prompt([
@@ -66,11 +86,11 @@ const employeePrompt = () => {
             data.id,
             data.email
         );
-
-        employeeArray.push(employeeProfile);
-        promptUser();
-    });
-}
+        const cardify = employeeCard(employeeProfile)
+        teamArray.push(cardify);
+			promptUser();
+    })
+};
 
 const managerPrompt = () => {
     inquirer.prompt([
@@ -94,7 +114,6 @@ const managerPrompt = () => {
             type: "input",
             message: "Enter manager's office number:"
         }
-
     ]).then(data => {
         const managerProfile = new Manager(
             data.name,
@@ -102,10 +121,9 @@ const managerPrompt = () => {
             data.email,
             data.officeNumber
         );
-
-        managerArray.push(managerProfile);
-        promptUser();
-
+        const cardify = managerCard(managerProfile)
+        teamArray.push(cardify);
+			promptUser();
     });
 };
 
@@ -138,9 +156,9 @@ const engineerPrompt = () => {
             data.email,
             data.officeNumber
         );
-
-        engineerArray.push(engineerProfile);
-        promptUser();
+        const cardify = engineerCard(engineerProfile)
+        teamArray.push(cardify);
+			promptUser();
     });
 };
 
@@ -166,7 +184,6 @@ const internPrompt = () => {
             name: "school",
             message: "Enter intern's school:",
         }
-
     ]).then(data => {
         const internProfile = new Intern(
             data.name,
@@ -174,14 +191,16 @@ const internPrompt = () => {
             data.email,
             data.officeNumber
         );
-
-        internArray.push(internProfile);
-        promptUser();
+        const cardify = internCard(internProfile)
+        teamArray.push(cardify);
+			promptUser();
     })
 };
 
-function init() {
-    promptUser()
-};
+promptUser()
 
-init();
+function generateTeamProfile() {
+    // write team members to a html file
+    const teamProfileCards = teamArray.join('');
+    fs.writeFileSync(htmlGenerator, htmlTemplate(teamProfileCards), 'utf-8');
+  };
